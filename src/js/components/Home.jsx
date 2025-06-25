@@ -1,28 +1,60 @@
-import React from "react";
+import React, { useState } from "react";
+import ReactDOM from "react-dom/client";
+import "../../styles/index.css";
 
-//include images into your bundle
-import rigoImage from "../../img/rigo-baby.jpg";
-
-//create your first component
 const Home = () => {
-	return (
-		<div className="text-center">
-            
+    const [task, setTask] = useState("");
+    const [todos, setTodos] = useState([]);
 
-			<h1 className="text-center mt-5">Hello Rigo!</h1>
-			<p>
-				<img src={rigoImage} />
-			</p>
-			<a href="#" className="btn btn-success">
-				If you see this green button... bootstrap is working...
-			</a>
-			<p>
-				Made by{" "}
-				<a href="http://www.4geeksacademy.com">4Geeks Academy</a>, with
-				love!
-			</p>
-		</div>
-	);
+    const handleInputChange = (e) => {
+        setTask(e.target.value);
+    };
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter" && task.trim() !== "") {
+            setTodos([...todos, task.trim()]);
+            setTask("");
+        }
+    };
+
+    const handleDeleteTodo = (indexToDelete) => {
+        setTodos(todos.filter((_, index) => index !== indexToDelete));
+    };
+
+    return (
+        <div className="container">
+            <h1>To do List</h1>
+            <div className="todo-box">
+                <input
+                    type="text"
+                    placeholder="¿Qué necesitas hacer?"
+                    value={task}
+                    onChange={handleInputChange}
+                    onKeyDown={handleKeyDown}
+                />
+                <ul>
+                    {todos.length === 0 ? (
+                        <li>No hay tareas, añadir tareas</li>
+                    ) : (
+                        todos.map((todo, index) => (
+                            <li key={index}>
+                                {todo}
+                                <button
+                                    className="delete-button"
+                                    onClick={() => handleDeleteTodo(index)}
+                                >
+                                    X
+                                </button>
+                            </li>
+                        ))
+                    )}
+                </ul>
+                <div className="tasks-left">{todos.length} item(s) left</div>
+            </div>
+            <div className="author-name">Ana Sequera</div>
+        </div>
+    );
 };
 
-export default Home;
+const root = ReactDOM.createRoot(document.querySelector("#app"));
+root.render(<Home />);
